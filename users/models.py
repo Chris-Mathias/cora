@@ -43,6 +43,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        ordering = ['-created_at']
+
     def __str__(self):
         return self.email
 
@@ -55,8 +60,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.deleted_at = None
         self.is_active = True
         self.save()
-
-    class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-        ordering = ['-created_at']
