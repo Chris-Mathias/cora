@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 from locations.models import City
+from products.models import Product
 from tenants.models import Tenant
 
 
@@ -53,3 +54,13 @@ class Supplier(models.Model):
         self.deleted_at = None
         self.is_active = True
         self.save()
+
+
+class SupplierProduct(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='supplier_products')
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='suppliers')
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    supplier_code = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

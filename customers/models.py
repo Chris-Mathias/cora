@@ -7,7 +7,7 @@ from tenants.models import Tenant
 
 
 class Customer(models.Model):
-    
+
     class CustomerType(models.TextChoices):
         INDIVIDUAL = 'PF', 'Pessoa Física'
         COMPANY = 'PJ', 'Pessoa Jurídica'
