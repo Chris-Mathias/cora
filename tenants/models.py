@@ -20,7 +20,7 @@ class Tenant(models.Model):
     phone_secondary = models.CharField(max_length=20, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     cpf = models.CharField(max_length=14, blank=True, null=True)
-    cnpj = models.CharField(max_length=17, blank=True, null=True)
+    cnpj = models.CharField(max_length=18, blank=True, null=True)
     state_registration = models.CharField(max_length=30, blank=True, null=True)
     address_street = models.CharField(max_length=255, blank=True, null=True)
     address_number = models.CharField(max_length=20, blank=True, null=True)
