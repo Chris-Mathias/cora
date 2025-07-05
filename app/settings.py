@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'customers',
+    'financials',
     'inventory',
     'locations',
     'productions',
