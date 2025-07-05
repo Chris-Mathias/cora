@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ProductionStage, ProductionOrder, ProductionStageHistory
+from .models import ProductionOrder, ProductionStage, ProductionStageHistory
 
 
 class ProductionStageHistoryInline(admin.TabularInline):
