@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Tenant, Role
+from .models import Role, Tenant
 
 
 @admin.register(Tenant)

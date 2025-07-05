@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Country, State, City
+from .models import City, Country, State
 
 
 @admin.register(Country)

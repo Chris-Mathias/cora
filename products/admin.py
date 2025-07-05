@@ -1,12 +1,13 @@
 from django.contrib import admin
 
-from .models import Product, ProductCategory, ProductBrand, Attribute, AttributeValue, ProductComposition, ProductAttributeValue
+from .models import (Attribute, AttributeValue, Product, ProductAttributeValue,
+                     ProductBrand, ProductCategory, ProductComposition)
 
 
 class ProductCompositionInline(admin.TabularInline):
     model = ProductComposition
     fk_name = 'product'
-    extra = 1
+    extra = 0
     verbose_name = 'Product Composition'
     verbose_name_plural = 'Product Compositions'
     autocomplete_fields = ['component']
@@ -14,7 +15,7 @@ class ProductCompositionInline(admin.TabularInline):
 
 class ProductAttributeValueInline(admin.TabularInline):
     model = ProductAttributeValue
-    extra = 1
+    extra = 0
     verbose_name = 'Product Attribute Value'
     verbose_name_plural = 'Product Attribute Values'
     autocomplete_fields = ['attribute_value']
@@ -23,7 +24,7 @@ class ProductAttributeValueInline(admin.TabularInline):
 class VariantInline(admin.TabularInline):
     model = Product
     fk_name = 'parent'
-    extra = 1
+    extra = 0
     verbose_name = 'Variant'
     verbose_name_plural = 'Variants'
     fields = ('name', 'price', 'sku', 'stock_quantity')
