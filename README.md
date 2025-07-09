@@ -10,103 +10,72 @@ The **multi-tenant design** ensures data isolation, allowing multiple organizati
 
 ## Current Project Status
 
-**Phase:** Initial Data Modeling
+**Phase:** Core Data Modeling Complete & Service Layer Implementation in Progress
 
-The project is in the early stages of development. The core data models for **tenants, users, products**, and **customers** have been defined and implemented using Django's ORM.
+The project has completed its initial data modeling phase. All core modules have been modeled using Django's ORM. The development is now focused on implementing the business logic within a dedicated service layer.
 
 The following components have not yet been developed:
 
-- **Business Logic Layer**: Views, serializers, and complex business rule validations.
-- **API Layer**: URL endpoints for exposing the models' functionalities.
-- **Core Modules**: Models for inventory, finance, sales, and production.
+- **API Layer**: URL endpoints, Views/ViewSets, and Serializers for exposing the system's functionalities.
+- **BComprehensive Business Logic**: While foundational services are being built, most cross-module business rules are still pending.
+- **User Interface (UI)**: No frontend has been developed yet.
 
 ---
 
-## Implemented Data Models
+## Implemented Modules
 
-### Multi-Tenant Architecture
+### Data Models
 
-- **Tenant Model**: Central model of the system. All other data is associated with a specific tenant.
-- **TenantUser Model**: A through-model that links a User to a Tenant and Role.
+The complete database schema has been defined for the following modules:
 
-### User & Access Management (RBAC)
+- Multi-Tenant Architecture: Tenant, TenantUser
+- User & Access Management (RBAC): Custom User, Role (global and tenant-specific) linked to Django Permission.
+- Product Management: Product (simple, variant, composite), ProductCategory, ProductBrand, Attribute, AttributeValue.
+- Customer Management: Customer.
+- Supplier Management: Supplier.
+- Location Module: Country, State, City.
+- Sales Module: SaleOrder, SaleOrderItem, SaleOrderStatus, SaleOrderHistory.
+- Purchase Module: PurchaseOrder, PurchaseOrderItem, PurchaseOrderStatus.
+- Production Module: ProductionOrder, ProductionStage, ProductionStageHistory.
+- Inventory Module: StockMovement (centralized ledger), StockEntry, StockAdjustment, and their respective items and reasons.
+- Financial Module: AccountPayable, AccountReceivable, PaymentTransaction, CashFlow, CompanyAccount, FinancialCategory, FinancialStatus.
 
-- **Custom User Model**: Uses email for authentication (instead of username).
-- **Role Model**:
-  - Implements **Role-Based Access Control** (RBAC).
-  - Supports both **global roles** (`tenant=None`) and **tenant-specific roles**.
-  - Linked to Django’s native **Permission model** for fine-grained access control.
+### Service Layer
 
-### Product Management
+A service-oriented architecture is being implemented to encapsulate business logic. The following services have been developed:
 
-- **Product Model**: Supports multiple product structures:
-  - **Simple Products**: Standard single-item products.
-  - **Variant Products**: Self-referencing parent key to define product variants (e.g., T-shirt with sizes/colors).
-  - **Composite Products**: Many-to-many to self, allowing bundles or kits.
-- **Supporting Models**:
-  - `ProductCategory`
-  - `ProductBrand`
-  - `Attribute` / `AttributeValue`
-
-### Customer Management
-
-- **Customer Model**: Manages customer records per tenant.
-
-### Location Module
-
-- `Country`
-- `State`
-- `City`
-
----
+- inventory.services: Centralizes all stock operations. Provides functions to create stock entries and adjustments, ensuring all changes are atomic and correctly registered in StockMovement.
 
 ## Roadmap: What's Next
 
-### 1. Core Module Modeling
+1. Core Module Modeling  
+   [x] Inventory Management  
+   [x] Financial Module  
+   [x] Sales Module  
+   [x] Production Module  
+   [x] Purchase & Supplier Module
 
-- [ ] Inventory Management
-  - [ ] Stock Movement (entry, exit, transfers)
-  - [ ] Inventory Adjustment & Stocktaking
+2. Service Layer Implementation  
+   [x] Implement inventory_service.  
+   [ ] Implement sale_order_service.  
+   [ ] Implement financial_service for payment processing.  
+   [ ] Implement purchase_service for purchase order lifecycle.  
+   [ ] Implement production_service for production order lifecycle.
 
-- [ ] Financial Module
-  - [ ] Accounts Payable / Receivable
-  - [ ] Cash Flow Transactions
+3. API Layer Implementation  
+   [ ] Implement Views / ViewSets for all models.  
+   [ ] Implement Serializers for data representation.  
+   [ ] Define URL Endpoints.
 
-- [ ] Sales Module
-  - [ ] Sales Order / Sales Order Item
-  - [ ] Invoicing Models
-
-- [ ] Production Module
-  - [ ] Production Orders Model
-
-- [ ] Purchase Module
-  - [ ] Purchase Order Model
-
----
-
-### 2. API Layer Implementation
-
-- [ ] Views / ViewSets
-- [ ] Serializers
-- [ ] URL Endpoints
-- [ ] Business Logic and Validations
-
----
-
-### 3. Additional Features
-
-- [ ] Dashboard & Reporting
-  - [ ] KPI Aggregation
-  - [ ] Sales & Inventory Reports
-
----
+4. Additional Features  
+   [ ] Dashboard & Reporting:  
+   [ ] KPI Aggregation  
+   [ ] Sales & Inventory Reports
 
 ## Technology Stack
 
-- **Backend**: Python, Django  
-- **Database**: *(To be specified — e.g., PostgreSQL or MySQL)*
-
----
+Backend: Python, Django  
+Database: (To be specified — e.g., PostgreSQL or MySQL)
 
 ## Getting Started
 
