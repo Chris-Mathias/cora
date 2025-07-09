@@ -17,7 +17,7 @@ The project has completed its initial data modeling phase. All core modules have
 The following components have not yet been developed:
 
 - **API Layer**: URL endpoints, Views/ViewSets, and Serializers for exposing the system's functionalities.
-- **BComprehensive Business Logic**: While foundational services are being built, most cross-module business rules are still pending.
+- **Comprehensive Business Logic**: While foundational services are being built, most cross-module business rules are still pending.
 - **User Interface (UI)**: No frontend has been developed yet.
 
 ---
