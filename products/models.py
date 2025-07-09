@@ -127,7 +127,7 @@ class Product(models.Model):
         ordering = ['name']
         constraints = [
             models.CheckConstraint(
-                check=~models.Q(id=models.F('parent_id')),
+                condition=~models.Q(id=models.F('parent_id')),
                 name='product_cannot_be_its_own_parent'
             )
         ]

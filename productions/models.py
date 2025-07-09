@@ -8,7 +8,8 @@ from tenants.models import Tenant
 
 class ProductionStage(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, blank=True, null=True, related_name='production_stages')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
+    label = models.CharField(max_length=100)
     sequence_order = models.PositiveIntegerField(default=0)
     color_code = models.CharField(max_length=7, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

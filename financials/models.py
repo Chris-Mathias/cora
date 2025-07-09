@@ -45,7 +45,7 @@ class FinancialStatus(models.Model):
         verbose_name = 'Financial Status'
         verbose_name_plural = 'Financial Statuses'
         unique_together = ('tenant', 'name')
-        ordering = ['tenant', 'name']
+        ordering = ['id']
 
     def __str__(self):
         return self.label

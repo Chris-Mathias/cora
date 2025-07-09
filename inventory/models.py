@@ -34,6 +34,7 @@ class StockEntry(models.Model):
 
 
 class StockEntryItem(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='stock_entry_items')
     stock_entry = models.ForeignKey(StockEntry, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='stock_entry_items')
     quantity = models.DecimalField(max_digits=10, decimal_places=3, default=1)

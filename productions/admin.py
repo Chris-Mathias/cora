@@ -17,7 +17,7 @@ class ProductionStageHistoryInline(admin.TabularInline):
 
 @admin.register(ProductionStage)
 class ProductionStageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'sequence_order', 'tenant')
+    list_display = ('label', 'name', 'sequence_order', 'tenant')
     list_filter = ('tenant',)
     search_fields = ('name',)
 

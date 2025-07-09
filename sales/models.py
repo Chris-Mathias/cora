@@ -65,11 +65,11 @@ class SaleOrder(models.Model):
 
     def soft_delete(self):
         try:
-            deleted_status = SaleOrderStatus.objects.get(
+            canceled_status = SaleOrderStatus.objects.get(
                 models.Q(tenant=self.tenant) | models.Q(tenant__isnull=True),
-                name__iexact='DELETED'
+                name__iexact='CANCELED'
             )
-            self.status = deleted_status
+            self.status = canceled_status
         except SaleOrderStatus.DoesNotExist:
             pass
 
@@ -85,6 +85,7 @@ class SaleOrderItem(models.Model):
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     taxes_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
