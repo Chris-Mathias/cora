@@ -64,12 +64,12 @@ def create_purchase_order(
 
     total_amount = Decimal('0.00')
     for item_data in items_data:
-        tenant = purchase_order.tenant
         quantity = Decimal(str(item_data['quantity']))
-        unit_price = Decimal(str(item_data['unit_price']))
+        unit_price = Decimal(str(item_data['unit_price'])) if 'unit_price' in item_data else Decimal('0.00')
         item_total = quantity * unit_price
 
         PurchaseOrderItem.objects.create(
+            tenant=purchase_order.tenant,
             purchase_order=purchase_order,
             product=item_data['product'],
             quantity=quantity,
@@ -80,3 +80,37 @@ def create_purchase_order(
     purchase_order.total_amount = total_amount
     purchase_order.save(update_fields=['total_amount'])
     return purchase_order
+
+
+@transaction.atomic
+def register_reception(
+    *,
+    purchase_order: PurchaseOrder,
+    user: User,
+    received_items_data: List[Dict[str, Any]],
+    notes: str = None,
+):
+    """
+    Register the reception of a purchase order and create stock entries with DRAFT status.
+    This function does not complete the stock entry or create financial records.
+
+    Args:
+        purchase_order (PurchaseOrder): The purchase order being received.
+        user (User): The user registering the reception.
+        received_items_data (List[Dict[str, Any]]): List of dictionaries containing received item data ('product', 'quantity', 'unit_price', 'expiration_date').
+        notes (str, optional): Additional notes for the reception. Defaults to None.
+
+    Returns:
+        PurchaseOrder: The updated purchase order with stock entries created.
+    """
+    stock_entry = create_stock_entry(
+        tenant=purchase_order.tenant,
+        user=user,
+        items_data=received_items_data,
+        purchase=purchase_order,
+        supplier=purchase_order.supplier,
+        status='DRAFT',
+        notes=notes or f"Recebimento referente ao pedido de compra #{purchase_order.id} - {purchase_order.supplier.name}"
+    )
+
+    return stock_entry
