@@ -61,6 +61,7 @@ class PurchaseOrder(models.Model):
 
 
 class PurchaseOrderItem(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='purchase_order_items')
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='purchase_order_items')
     quantity = models.DecimalField(max_digits=10, decimal_places=3, default=1)

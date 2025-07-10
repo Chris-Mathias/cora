@@ -23,6 +23,7 @@ def create_purchase_order(
     *,
     tenant: Tenant,
     supplier: Supplier,
+    user: User,
     items_data: List[Dict[str, Any]],
     status_name: str = 'DRAFT',
     expected_delivery_date: timezone.datetime = None,
@@ -35,6 +36,7 @@ def create_purchase_order(
     Args:
         tenant (Tenant): The tenant associated with the purchase order.
         supplier (Supplier): The supplier for the purchase order.
+        user (User): The user creating the purchase order.
         items_data (List[Dict[str, Any]]): List of dictionaries containing item data ('product', 'quantity', 'unit_price').
         status_name (str, optional): Status of the purchase order. Defaults to 'DRAFT'.
         expected_delivery_date (timezone.datetime, optional): Expected delivery date for the purchase order. Defaults to None.
@@ -54,6 +56,7 @@ def create_purchase_order(
     purchase_order = PurchaseOrder.objects.create(
         tenant=tenant,
         supplier=supplier,
+        created_by=user,
         status=status,
         expected_delivery_date=expected_delivery_date,
         notes=notes
@@ -61,6 +64,7 @@ def create_purchase_order(
 
     total_amount = Decimal('0.00')
     for item_data in items_data:
+        tenant = purchase_order.tenant
         quantity = Decimal(str(item_data['quantity']))
         unit_price = Decimal(str(item_data['unit_price']))
         item_total = quantity * unit_price
