@@ -113,12 +113,12 @@ def create_stock_entry(
         user=user,
         purchase=purchase,
         supplier=supplier,
-        status=status,
+        status=StockEntry.StockEntryStatus.DRAFT,
         notes=notes
     )
 
     for item_data in items_data:
-        item = StockEntryItem.objects.create(
+        StockEntryItem.objects.create(
             tenant=tenant,
             stock_entry=stock_entry,
             product=item_data['product'],
@@ -128,17 +128,42 @@ def create_stock_entry(
         )
 
         if status == StockEntry.StockEntryStatus.COMPLETED:
-            _create_stock_movement(
+            stock_entry = complete_stock_entry(
                 tenant=tenant,
-                product=item.product,
-                direction=StockMovement.MovementDirection.IN,
-                quantity=item.quantity,
-                source_document=item,
-                user=user,
-                unit_price=item.unit_price,
-                notes=f"Entrada de estoque #{stock_entry.id} - {item.product.name}"
+                stock_entry=stock_entry,
+                user=user
             )
 
+    return stock_entry
+
+
+@transaction.atomic
+def complete_stock_entry(
+    *,
+    tenant: Tenant,
+    stock_entry: StockEntry,
+    user: User
+) -> StockEntry:
+    """
+    Complete a stock entry, changing its status to COMPLETED and creating stock movements.
+    """
+    if stock_entry.status != StockEntry.StockEntryStatus.DRAFT:
+        raise InventoryError("Only draft stock entries can be completed.")
+
+    for item in stock_entry.items.all():
+        _create_stock_movement(
+            tenant=tenant,
+            product=item.product,
+            direction=StockMovement.MovementDirection.IN,
+            quantity=item.quantity,
+            source_document=item,
+            user=user,
+            unit_price=item.unit_price,
+            notes=f"Entrada de estoque #{stock_entry.id} - {item.product.name}"
+        )
+
+    stock_entry.status = StockEntry.StockEntryStatus.COMPLETED
+    stock_entry.save(update_fields=['status'])
     return stock_entry
 
 
@@ -194,4 +219,33 @@ def create_stock_adjustment(
                 notes=item.notes or f"Ajuste de estoque #{stock_adjustment.id} - {item.product.name}"
             )
 
+    return stock_adjustment
+
+
+@transaction.atomic
+def complete_stock_adjustment(
+    *,
+    tenant: Tenant,
+    stock_adjustment: StockAdjustment,
+    user: User
+) -> StockAdjustment:
+    """
+    Complete a stock adjustment, changing its status to COMPLETED and creating stock movements.
+    """
+    if stock_adjustment.status != StockAdjustment.StockAdjustmentStatus.DRAFT:
+        raise InventoryError("Only draft stock adjustments can be completed.")
+
+    for item in stock_adjustment.items.all():
+        _create_stock_movement(
+            tenant=tenant,
+            product=item.product,
+            direction=item.adjustment_type.direction,
+            quantity=item.quantity,
+            source_document=item,
+            user=user,
+            notes=f"Ajuste de estoque #{stock_adjustment.id} - {item.product.name}"
+        )
+
+    stock_adjustment.status = StockAdjustment.StockAdjustmentStatus.COMPLETED
+    stock_adjustment.save(update_fields=['status'])
     return stock_adjustment
